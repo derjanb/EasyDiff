@@ -32,9 +32,9 @@ def hgopen(args, cwd=None):
     cmd = [_hg_path] + args
 
     env = environ.copy()
-    env['LC_ALL'] = 'en_US'
 
     if _PLATFORM == "windows":
+        env['LC_ALL'] = 'en_US'
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         process = subprocess.Popen(
@@ -48,6 +48,7 @@ def hgopen(args, cwd=None):
             env=env
         )
     else:
+        env['LC_ALL'] = 'en_US.UTF-8'
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,

@@ -36,9 +36,9 @@ def svnopen(args):
     cmd = [_svn_path, "--non-interactive"] + args
 
     env = environ.copy()
-    env['LC_ALL'] = 'en_US'
 
     if _PLATFORM == "windows":
+        env['LC_ALL'] = 'en_US'
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         process = subprocess.Popen(
@@ -51,6 +51,7 @@ def svnopen(args):
             env=env
         )
     else:
+        env['LC_ALL'] = 'en_US.UTF-8'
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
