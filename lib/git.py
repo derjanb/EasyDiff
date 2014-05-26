@@ -173,7 +173,7 @@ def diff(target, last=False):
     results = b""
 
     if git_tree is not None:
-        args = ["diff", "--no-color"]
+        args = ["diff", "--no-color", "--src-prefix=%s/" % git_tree, "--dst-prefix=%s/" % git_tree]
 
         if last:
             revs = getrevision(target, 2)
