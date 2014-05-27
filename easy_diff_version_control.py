@@ -322,10 +322,48 @@ class _EasyDiffHg(_VersionControlDiff):
             log("View not versioned under Mercurial!", status=True)
         return result
 
+class _EasyDiffAuto(_VersionControlDiff):
+    def setup(self):
+        self.control_type = "Auto"
+        self.control_enabled = True
+        self.vcs = None
+
+    def revert_file(self, name):
+        return self.vcs.revert(name) if self.vcs != None else None
+
+    def get_files(self, name, **kwargs):
+        return self.vcs.get_files(name, **kwargs) if self.vcs != None else None
+
+    def what_vcs(self, name):
+        if (not multiget(load_settings(), "svn_disabled", False) and _EasyDiffSvn().is_versioned(name)):
+            return _EasyDiffSvn()
+        elif (not multiget(load_settings(), "git_disabled", False) and _EasyDiffGit().is_versioned(name)):
+            return _EasyDiffGit()
+        elif (not multiget(load_settings(), "hg_disabled", False) and _EasyDiffHg().is_versioned(name)):
+            return _EasyDiffHg()
+
+        return None
+
+    def is_versioned(self, name):
+        #if self.vcs == None:
+        self.vcs = self.what_vcs(name)
+
+        return self.vcs.is_versioned(name) if self.vcs != None else None
+
+    def get_diff(self, name, **kwargs):
+        #if self.vcs == None:
+        self.vcs = self.what_vcs(name)
+
+        return self.vcs.get_diff(name, **kwargs) if self.vcs != None else None
 
 ###############################
 # Version Control Commands
 ###############################
+class EasyDiffAutoCommand(_VersionControlCommand, _EasyDiffAuto):
+    def __init__(self, window):
+        super().__init__(window)
+        self.setup()
+
 class EasyDiffSvnCommand(_VersionControlCommand, _EasyDiffSvn):
     def __init__(self, window):
         super().__init__(window)
