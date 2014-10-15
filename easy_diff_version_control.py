@@ -348,7 +348,7 @@ class _EasyDiffAuto(_VersionControlDiff):
         #if self.vcs == None:
         self.vcs = self.what_vcs(name)
 
-        return self.vcs.is_versioned(name) if self.vcs != None else None
+        return self.vcs.is_versioned(name) if self.vcs != None else False
 
     def get_diff(self, name, **kwargs):
         #if self.vcs == None:
